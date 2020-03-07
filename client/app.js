@@ -1,27 +1,22 @@
 const loginForm = document.getElementById('welcome-form');
 const messagesSection = document.getElementById('messages-section');
-const messagesList = document.getElementById('messages-section__list');
+const messagesList = document.getElementById('messages-list');
 const addMessageForm = document.getElementById('add-messages-form');
 const userNameInput = document.getElementById('username');
 const messageContentInput = document.getElementById('message-content');
 
 let userName;
 
-loginForm.addEventListener('submit', login);
-
 const login = event => {
   event.preventDefault();
-  if (userNameInput.innerHTML == '') {
+  if (userNameInput.value == '') {
     window.alert('UserName is missing :(');
   } else {
-    userName = userNameInput.innerHTML;
-    console.log(userName);
-    userNameInput.classList.toggle('show');
+    userName = userNameInput.value;
+    loginForm.classList.toggle('show');
     messagesSection.classList.toggle('show');
   }
 };
-
-addMessageForm.addEventListener('submit', sendMessage);
 
 const sendMessage = event => {
   event.preventDefault();
@@ -34,7 +29,7 @@ const sendMessage = event => {
 };
 
 const addMessage = (author, content) => {
-  const message = document.createElement('li');
+  let message = document.createElement('li');
   message.classList.add('message');
   message.classList.add('message--received');
   if (author == userName) {
@@ -48,3 +43,6 @@ const addMessage = (author, content) => {
   }
   messagesList.appendChild(message);
 };
+
+loginForm.addEventListener('submit', login);
+addMessageForm.addEventListener('submit', sendMessage);
