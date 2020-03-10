@@ -1,3 +1,6 @@
+const socket = io();
+socket.on('message', ({ author, content }) => addMessage(author, content));
+
 const loginForm = document.getElementById('welcome-form');
 const messagesSection = document.getElementById('messages-section');
 const messagesList = document.getElementById('messages-list');
@@ -18,30 +21,34 @@ const login = event => {
   }
 };
 
-const sendMessage = event => {
-  event.preventDefault();
-  if (messageContentInput.value == '') {
-    window.alert('No message :(');
-  } else {
-    addMessage(userName, messageContentInput.value);
-    messageContentInput.value = '';
-  }
-};
-
 const addMessage = (author, content) => {
   let message = document.createElement('li');
   message.classList.add('message');
   message.classList.add('message--received');
   if (author == userName) {
     message.classList.add('message--self');
-    message.innerHTML = `<h3 class="message__author">${
-      userName === author ? 'You' : author
-    }</h3>
-  <div class="message__content">
-    ${content}
-  </div>`;
   }
+  message.innerHTML = `<h3 class="message__author">${
+    userName === author ? 'You' : author
+  }</h3>
+    <div class="message__content">
+      ${content}
+    </div>`;
   messagesList.appendChild(message);
+};
+
+const sendMessage = event => {
+  event.preventDefault();
+  if (messageContentInput.value == '') {
+    window.alert('No message :(');
+  } else {
+    addMessage(userName, messageContentInput.value);
+    socket.emit('message', {
+      author: userName,
+      content: messageContentInput.value
+    });
+    messageContentInput.value = '';
+  }
 };
 
 loginForm.addEventListener('submit', login);
